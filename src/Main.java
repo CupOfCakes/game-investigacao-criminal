@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
+import java.util.Scanner;
 
 abstract class Pessoa {
     String nome;
@@ -63,6 +64,117 @@ class Caso {
             }
         }
     }
+}
+
+class Game{
+    public static void startGame() {
+        // Pagina de inicio
+        System.out.println("----------------------------------------------");
+        System.out.println("  Sistema de Investigação - Jogo de Detetive");
+        System.out.println("----------------------------------------------");
+    }
+
+    public static Detetive configDetetive() {
+        // Configuração do detetive
+        System.out.println("Configuração do Detetive:");
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Digite o nome do detetive: ");
+        String nomeDetetive = scanner.nextLine();
+        scanner.close();
+
+        Detetive Detetive = new Detetive();
+        Detetive.nome = nomeDetetive;
+
+        return Detetive;
+    }
+
+    public static void menuInicial(Detetive detetive, Caso caso) {
+        // Menu principal do jogo
+        System.out.println("Bem-vindo, " + detetive.nome + "!");
+        System.out.println("1. Iniciar novo caso");
+        System.out.println("2. Sair");
+        
+        Scanner scanner = new Scanner(System.in);
+        int escolha = scanner.nextInt();
+        scanner.close();
+        
+        if (escolha == 1) {
+            menuCaso(caso);;
+        } else {
+            System.out.println("Saindo do jogo...");
+            System.exit(0);
+        }
+    }
+
+    public static void menuCaso(Detetive detetive, Caso caso) {
+        System.out.println("Resumo do caso:");
+        caso.exibirResumo();
+        
+        System.out.println("----------------------------------------------");
+        
+        while (true) {
+            System.out.println("O que você deseja fazer?");
+            System.out.println("1. Interrogar suspeitos");
+            System.out.println("2. Ver pistas");
+            System.out.println("3. Acusar suspeito");
+            System.out.println("4. Sair do caso");
+
+            Scanner scanner = new Scanner(System.in);
+            int escolha = scanner.nextInt();
+
+            if (escolha == 1) {
+                interrogarSuspeitos(caso);
+            } else if (escolha == 2) {
+                verPistas(caso);
+            } else if (escolha == 3) {
+                acusarSuspeito(caso);
+                break
+            } else if (escolha == 4) {
+                menuInicial(detetive, caso);
+                break;
+            } else {
+                System.out.println("Opção inválida. Tente novamente.");
+            }
+        }
+
+    }
+
+    public static void interrogarSuspeitos(Caso caso) {
+        
+        for(Suspeito s : caso.suspeitos) {
+            System.out.println("- " + s.nome + " (" + s.profissao + "): ");
+        }
+
+        System.out.println("Escolha um suspeito para interrogar");
+        Scanner scanner = new Scanner(System.in);
+        int escolha = scanner.nextInt();
+        scanner.close();
+
+        if (escolha < 1 || escolha > caso.suspeitos.size()) {
+            System.out.println("Suspeito inválido.");
+            return;
+        }
+
+        Suspeito suspeito = caso.suspeitos.get(escolha - 1);
+        System.out.println("Depoimento de " + suspeito.nome + ": " + suspeito.depoimento);
+        
+    }
+
+    public static void verPistas(Caso caso) {
+        System.out.println("Pistas encontradas:");
+        for (Pista p : caso.pistas) {
+            System.out.println("- " + p.descricao);
+        }
+
+        System.out.println("Investigar alguma pista?");
+        Scanner scanner = new Scanner(System.in);
+        String resposta = scanner.nextLine();
+        scanner.close();
+
+
+    }
+
 }
 
 public class Main{
