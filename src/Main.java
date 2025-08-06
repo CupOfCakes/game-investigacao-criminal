@@ -74,14 +74,12 @@ class Game{
         System.out.println("----------------------------------------------");
     }
 
-    public static Detetive configDetetive() {
+    public static Detetive configDetetive(Scanner scanner) {
         // Configuração do detetive
         System.out.println("Configuração do Detetive:");
 
-        Scanner scanner = new Scanner(System.in);
         System.out.print("Digite o nome do detetive: ");
         String nomeDetetive = scanner.nextLine();
-        scanner.close();
 
         Detetive Detetive = new Detetive();
         Detetive.nome = nomeDetetive;
@@ -89,16 +87,15 @@ class Game{
         return Detetive;
     }
 
-    public static void menuInicial(Detetive detetive, Caso caso) {
+    public static void menuInicial(Detetive detetive, Caso caso, Scanner scanner) {
         // Menu principal do jogo
         System.out.println("Bem-vindo, " + detetive.nome + "!");
         System.out.println("1. Iniciar novo caso");
         System.out.println("2. Sair");
         
-        Scanner scanner = new Scanner(System.in);
         int escolha = scanner.nextInt();
-        scanner.close();
-        
+        scanner.nextLine(); // Limpar o buffer do scanner
+
         if (escolha == 1) {
             //menuCaso(caso);;
         } else {
@@ -107,7 +104,7 @@ class Game{
         }
     }
 
-    public static void menuCaso(Detetive detetive, Caso caso) {
+    public static void menuCaso(Detetive detetive, Caso caso, Scanner scanner) {
         System.out.println("Resumo do caso:");
         caso.exibirResumo();
         
@@ -120,19 +117,18 @@ class Game{
             System.out.println("3. Acusar suspeito");
             System.out.println("4. Sair do caso");
 
-            Scanner scanner = new Scanner(System.in);
             int escolha = scanner.nextInt();
-            scanner.close();
+            scanner.nextLine(); // Limpar o buffer do scanner
 
             if (escolha == 1) {
-                interrogarSuspeitos(caso);
+                interrogarSuspeitos(caso, scanner);
             } else if (escolha == 2) {
-                verPistas(caso);
+                verPistas(caso, scanner);
             } else if (escolha == 3) {
                 //acusarSuspeito(caso);
                 break;
             } else if (escolha == 4) {
-                menuInicial(detetive, caso);
+                menuInicial(detetive, caso, scanner);
                 break;
             } else {
                 System.out.println("Opção inválida. Tente novamente.");
@@ -141,16 +137,15 @@ class Game{
 
     }
 
-    public static void interrogarSuspeitos(Caso caso) {
+    public static void interrogarSuspeitos(Caso caso, Scanner scanner) {
         
         for(Suspeito s : caso.suspeitos) {
             System.out.println("- " + s.nome + " (" + s.profissao + "): ");
         }
 
         System.out.println("Escolha um suspeito para interrogar");
-        Scanner scanner = new Scanner(System.in);
         int escolha = scanner.nextInt();
-        scanner.close();
+        scanner.nextLine(); // Limpar o buffer do scanner
 
         if (escolha < 1 || escolha > caso.suspeitos.size()) {
             System.out.println("Suspeito inválido.");
@@ -162,7 +157,7 @@ class Game{
         
     }
 
-    public static void verPistas(Caso caso) {
+    public static void verPistas(Caso caso, Scanner scanner) {
         System.out.println("Pistas encontradas:");
         int i = 1;
         for (Pista p : caso.pistas) {
@@ -171,9 +166,7 @@ class Game{
         }
 
         System.out.println("Investigar alguma pista?[s/n]");
-        Scanner scanner = new Scanner(System.in);
         String resposta = scanner.nextLine();
-        scanner.close();
 
         resposta = resposta.trim();
 
@@ -201,7 +194,7 @@ class Game{
 
     }
 
-    public static void acusarSuspeito(Caso caso) {
+    public static void acusarSuspeito(Caso caso, Scanner scanner) {
         System.out.println("Escolha um suspeito para acusar:");
         int i = 1;
         for (Suspeito s : caso.suspeitos) {
@@ -209,10 +202,9 @@ class Game{
             i++;
         }
 
-        Scanner scanner = new Scanner(System.in);
         int escolha = scanner.nextInt();
-        scanner.close();
-
+        scanner.nextLine(); // Limpar o buffer do scanner
+        
         if (escolha < 1 || escolha > caso.suspeitos.size()) {
             System.out.println("Suspeito inválido.");
             return;
@@ -232,6 +224,7 @@ class Game{
 
 public class Main{
     public static void main(String[] args){
+        Scanner scanner = new Scanner(System.in);
         Random rand = new Random();
         Caso caso = new Caso();
         int quantSuspeitos = 3; // Número de suspeitos
@@ -310,8 +303,8 @@ public class Main{
 
         // Iniciando o jogo
         Game.startGame();
-        Detetive detetive = Game.configDetetive();
-        Game.menuInicial(detetive, caso);
+        Detetive detetive = Game.configDetetive(scanner);
+        Game.menuInicial(detetive, caso, scanner);
         System.out.println("Obrigado por jogar!");
     }
 }
