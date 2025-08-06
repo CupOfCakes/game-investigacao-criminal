@@ -100,7 +100,7 @@ class Game{
         scanner.close();
         
         if (escolha == 1) {
-            menuCaso(caso);;
+            //menuCaso(caso);;
         } else {
             System.out.println("Saindo do jogo...");
             System.exit(0);
@@ -122,14 +122,15 @@ class Game{
 
             Scanner scanner = new Scanner(System.in);
             int escolha = scanner.nextInt();
+            scanner.close();
 
             if (escolha == 1) {
                 interrogarSuspeitos(caso);
             } else if (escolha == 2) {
                 verPistas(caso);
             } else if (escolha == 3) {
-                acusarSuspeito(caso);
-                break
+                //acusarSuspeito(caso);
+                break;
             } else if (escolha == 4) {
                 menuInicial(detetive, caso);
                 break;
@@ -163,16 +164,68 @@ class Game{
 
     public static void verPistas(Caso caso) {
         System.out.println("Pistas encontradas:");
+        int i = 1;
         for (Pista p : caso.pistas) {
-            System.out.println("- " + p.descricao);
+            System.out.println(i + ". " + p.descricao);
+            i++;
         }
 
-        System.out.println("Investigar alguma pista?");
+        System.out.println("Investigar alguma pista?[s/n]");
         Scanner scanner = new Scanner(System.in);
         String resposta = scanner.nextLine();
         scanner.close();
 
+        resposta = resposta.trim();
 
+        if (resposta.equalsIgnoreCase("s")) {
+            System.out.println("Escolha uma pista para investigar:");
+            int escolha = scanner.nextInt();
+            scanner.close();
+
+            if (escolha < 1 || escolha > caso.pistas.size()) {
+                System.out.println("Pista inválida.");
+                return;
+            }
+
+            Pista pista = caso.pistas.get(escolha - 1);
+            System.out.println("Investigando: " + pista.descricao);
+            if (pista.verdadeira) {
+                System.out.println("Essa pista é verdadeira!");
+            } else {
+                System.out.println("Essa pista é falsa.");
+            }
+        } else {
+            System.out.println("Voltando ao menu principal...");
+        }
+
+
+    }
+
+    public static void acusarSuspeito(Caso caso) {
+        System.out.println("Escolha um suspeito para acusar:");
+        int i = 1;
+        for (Suspeito s : caso.suspeitos) {
+            System.out.println(i + ". " + s.nome + " (" + s.profissao + ")");
+            i++;
+        }
+
+        Scanner scanner = new Scanner(System.in);
+        int escolha = scanner.nextInt();
+        scanner.close();
+
+        if (escolha < 1 || escolha > caso.suspeitos.size()) {
+            System.out.println("Suspeito inválido.");
+            return;
+        }
+
+        Suspeito suspeito = caso.suspeitos.get(escolha - 1);
+        if (suspeito.culpado) {
+            System.out.println("Você acusou corretamente: " + suspeito.nome + " é o culpado!");
+            System.out.println("Caso encerrado com sucesso!");
+        } else {
+            System.out.println("Você acusou incorretamente: " + suspeito.nome + " é inocente.");
+            return;
+        }
     }
 
 }
@@ -255,7 +308,11 @@ public class Main{
             caso.pistas.add(p);
         }
 
-        caso.exibirResumo();
+        // Iniciando o jogo
+        Game.startGame();
+        Detetive detetive = Game.configDetetive();
+        Game.menuInicial(detetive, caso);
+        System.out.println("Obrigado por jogar!");
     }
 }
 
